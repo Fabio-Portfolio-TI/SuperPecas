@@ -1,7 +1,14 @@
 package br.com.masterclass.superpecas.service;
 
+import br.com.masterclass.superpecas.entity.Carro;
+import br.com.masterclass.superpecas.entity.Peca;
+import br.com.masterclass.superpecas.repository.CarroRepository;
+import br.com.masterclass.superpecas.repository.PecaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class CarroService {
@@ -33,7 +40,7 @@ public class CarroService {
     }
 
     public void excluirCarro(Long id) {
-        List<Peca> pecasAssociadas = pecaRepository.findByModeloCarro(carro.getModelo());
+        List<Peca> pecasAssociadas = PecaRepository.findByModeloCarro(carro.getModelo());
         if (!pecasAssociadas.isEmpty()) {
             throw new RuntimeException("Esse carro não pode ser excluído pois tem peças associadas a ele");
         }

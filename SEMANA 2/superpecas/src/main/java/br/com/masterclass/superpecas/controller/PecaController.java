@@ -1,8 +1,12 @@
 package br.com.masterclass.superpecas.controller;
 
 
+import br.com.masterclass.superpecas.entity.Peca;
+import br.com.masterclass.superpecas.service.PecaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/pecas")

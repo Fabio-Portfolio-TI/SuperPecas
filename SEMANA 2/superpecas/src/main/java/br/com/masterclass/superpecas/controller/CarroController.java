@@ -1,6 +1,7 @@
 package br.com.masterclass.superpecas.controller;
 
 import br.com.masterclass.superpecas.entity.Carro;
+import br.com.masterclass.superpecas.service.CarroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
