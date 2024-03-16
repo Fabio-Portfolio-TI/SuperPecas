@@ -1,9 +1,6 @@
 package br.com.masterclass.superpecas.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +11,19 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "Carro")
 public class Carro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "CarroID")
+    private Long carroId;
 
-    private String modelo;
+    @Column(name = "nomeModelo")
+    private String nomeModelo;
+
+    @Column(name = "fabricante")
     private String fabricante;
+
+    @Column(name = "CodigoUnico")
+    private String codigoUnico;
 }
