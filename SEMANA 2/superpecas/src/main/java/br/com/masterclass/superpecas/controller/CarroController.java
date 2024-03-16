@@ -1,15 +1,36 @@
 package br.com.masterclass.superpecas.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import br.com.masterclass.superpecas.entity.Carro;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/carro")
+@RequestMapping("/carros")
 public class CarroController {
 
-    @RequestMapping(value = "/",method = RequestMethod.GET)
-    public String buscaCarro(){
-        return "Teste";
+    @GetMapping
+    public List<Carro> listarCarros(){
+        return carroService.listarCarros();
     }
+    @GetMapping("{/id}")
+    public Carro buscarCarroPorId(@PathVariable Long id){
+        return carroService.buscarCarroPorId(id);
+    }
+
+    @PostMapping
+    public Carro cadastrarCarro(@RequestBody CarroDto carroDto){
+        return carroService.cadastrarCarro(CarroDTO);
+    }
+
+    @PutMapping("/{id}")
+    public Carro atualizarCarro(@PathVariable Long id, @RequestBody CarroDTO carroDTO) {
+        return carroService.atualizarCarro(id, carroDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public void excluirCarro(@PathVariable Long id) {
+        carroService.excluirCarro(id);
+    }
+
 }
