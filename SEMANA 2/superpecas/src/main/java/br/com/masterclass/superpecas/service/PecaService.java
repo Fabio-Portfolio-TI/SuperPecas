@@ -1,54 +1,64 @@
 package br.com.masterclass.superpecas.service;
 
-import br.com.masterclass.superpecas.entity.Carro;
-import br.com.masterclass.superpecas.entity.Peca;
-import br.com.masterclass.superpecas.repository.CarroRepository;
+import br.com.masterclass.superpecas.model.Peca;
+import br.com.masterclass.superpecas.model.PecaDTO;
 import br.com.masterclass.superpecas.repository.PecaRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PecaService {
+
     @Autowired
     private PecaRepository pecaRepository;
 
-    public List<Peca> listarPecas() {
-        return pecaRepository.findAll();
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public PecaDTO buscaPecaById(Long id) {
+        Peca peca = pecaRepository.findById(id).orElse(null);
+        return modelMapper.map(peca, PecaDTO.class);
     }
 
-    public Peca buscarPecaPorId(Long id) {
-        return pecaRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Peça não encontrada"));
+    public List<PecaDTO> listarTodas() {
+        List<Peca> pecas = pecaRepository.findAll();
+        return pecas.stream()
+                .map(peca -> modelMapper.map(peca, PecaDTO.class))
+                .collect(Collectors.toList());
     }
 
-    public Peca cadastrarPeca(PecaDTO pecaDTO) {
-        Peca peca = new Peca();
-        peca.setNome(pecaDTO.getNome());
-        peca.setDescricao(pecaDTO.getDescricao());
-        peca.setNumeroSerie(pecaDTO.getNumeroSerie());
-        peca.setFabricante(pecaDTO.getFabricante());
-        peca.setModeloCarro(pecaDTO.getModeloCarro());
-        return pecaRepository.save(peca);
+    public Page<PecaDTO> listarTodasPaginado(int page, int size) {
+        Page<Peca> pecaPage = pecaRepository.findAll(PageRequest.of(page, size));
+        return pecaPage.map(peca -> modelMapper.map(peca, PecaDTO.class));
     }
 
-    public Peca atualizarPeca(Long id, PecaDTO pecaDTO) {
-        Peca peca = buscarPecaPorId(id);
-        peca.setNome(pecaDTO.getNome());
-        peca.setDescricao(pecaDTO.getDescricao());
-        peca.setNumeroSerie(pecaDTO.getNumeroSerie());
-        peca.setFabricante(pecaDTO.getFabricante());
-        peca.setModeloCarro(pecaDTO.getModeloCarro());
-        return pecaRepository.save(peca);
+//    public Page<PecaDTO> listarTodasPaginadoTermo(String termo, int page, int size) {
+//        Page<Peca> pecaPage = pecaRepository.findByFabricante(termo, PageRequest.of(page, size));
+//        return pecaPage.map(peca -> modelMapper.map(peca, PecaDTO.class));
+//    }
+
+    public PecaDTO salvarPeca(PecaDTO pecaDTO) {
+        Peca peca = modelMapper.map(pecaDTO, Peca.class);
+        return modelMapper.map(pecaRepository.save(peca), PecaDTO.class);
     }
 
+//    public PecaDTO atualizarPeca(PecaDTO pecaDTO) {
+//        Peca peca = modelMapper.map(pecaDTO, Peca.class);
+//        return modelMapper.map(pecaRepository.save(peca), PecaDTO.class);
+//    }
+//
     public void excluirPeca(Long id) {
-        Peca peca = buscarPecaPorId(id);
-        List<Carro> carrosAssociados = CarroRepository.findByModelo(peca.getModeloCarro());
-        if (!carrosAssociados.isEmpty()) {
-            throw new RuntimeException("Essa peça não pode ser excluída pois está associada a carros");
+        Peca peca = pecaRepository.findById(id).orElse(null);
+        if (peca != null) {
+            pecaRepository.delete(peca);
+        } else {
+            throw new RuntimeException("Peça não encontrada.");
         }
-        pecaRepository.delete(peca);
     }
 }

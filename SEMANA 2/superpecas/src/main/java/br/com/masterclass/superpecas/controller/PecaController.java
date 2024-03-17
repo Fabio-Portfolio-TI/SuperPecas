@@ -1,41 +1,64 @@
 package br.com.masterclass.superpecas.controller;
 
-
-import br.com.masterclass.superpecas.entity.Peca;
+import br.com.masterclass.superpecas.model.PecaDTO;
 import br.com.masterclass.superpecas.service.PecaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/pecas")
+@RequestMapping("/peca")
 public class PecaController {
+
     @Autowired
     private PecaService pecaService;
 
-    @GetMapping
-    public List<Peca> listarPecas() {
-        return pecaService.listarPecas();
+    @GetMapping("/{id}")
+    public ResponseEntity<PecaDTO> buscaPecaById(@PathVariable Long id) {
+        PecaDTO peca = pecaService.buscaPecaById(id);
+        return ResponseEntity.ok(peca);
     }
 
-    @GetMapping("/{id}")
-    public Peca buscarPecaPorId(@PathVariable Long id) {
-        return pecaService.buscarPecaPorId(id);
+    @GetMapping("/listarTodos")
+    public ResponseEntity<List<PecaDTO>> listarTodasPecas() {
+        List<PecaDTO> pecas = pecaService.listarTodas();
+        return ResponseEntity.ok(pecas);
     }
+
+    @GetMapping("/listarTodosPaginado")
+    public ResponseEntity<Page<PecaDTO>> listarTodasPecasPaginado(@RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "10") int size) {
+        Page<PecaDTO> pecas = pecaService.listarTodasPaginado(page, size);
+        return ResponseEntity.ok(pecas);
+    }
+
+//    @GetMapping("/listarTodosPaginado/{termo}")
+//    public ResponseEntity<Page<PecaDTO>> listarPecasPorTermoPaginado(@PathVariable String termo,
+//                                                                     @RequestParam(defaultValue = "0") int page,
+//                                                                     @RequestParam(defaultValue = "10") int size) {
+//        Page<PecaDTO> pecas = pecaService.listarTodasPaginadoTermo(termo, page, size);
+//        return ResponseEntity.ok(pecas);
+//    }
 
     @PostMapping
-    public Peca cadastrarPeca(@RequestBody PecaDTO pecaDTO) {
-        return pecaService.cadastrarPeca(pecaDTO);
+    public ResponseEntity<PecaDTO> salvarPeca(@RequestBody PecaDTO pecaDTO) {
+        PecaDTO savedPeca = pecaService.salvarPeca(pecaDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedPeca);
     }
 
-    @PostMapping("/{id}")
-    public Peca atualizarPeca(@PathVariable Long id, @RequestBody PecaDTO pecaDTO) {
-        return pecaService.atualizarPeca(id, pecaDTO);
-    }
+//    @PutMapping
+//    public ResponseEntity<PecaDTO> atualizarPeca(@RequestBody PecaDTO pecaDTO) {
+//        PecaDTO updatedPeca = pecaService.atualizarPeca(pecaDTO);
+//        return ResponseEntity.ok(updatedPeca);
+//    }
 
     @DeleteMapping("/{id}")
-    public void excluirPeca(@PathVariable Long id) {
+    public ResponseEntity<Void> excluirPeca(@PathVariable Long id) {
         pecaService.excluirPeca(id);
+        return ResponseEntity.noContent().build();
     }
 }

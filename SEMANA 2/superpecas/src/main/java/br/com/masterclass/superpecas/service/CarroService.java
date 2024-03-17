@@ -1,14 +1,18 @@
 package br.com.masterclass.superpecas.service;
 
-import br.com.masterclass.superpecas.entity.Carro;
-import br.com.masterclass.superpecas.entity.Peca;
+import br.com.masterclass.superpecas.model.Carro;
+import br.com.masterclass.superpecas.model.CarroDTO;
 import br.com.masterclass.superpecas.repository.CarroRepository;
 import br.com.masterclass.superpecas.repository.PecaRepository;
+import org.apache.coyote.BadRequestException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class CarroService {
@@ -16,34 +20,69 @@ public class CarroService {
     @Autowired
     private CarroRepository carroRepository;
 
-    public List<Carro> listarCarros() {
-        return carroRepository.findAll();
+    @Autowired
+    private PecaRepository pecaRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public CarroDTO getCarroById(Long id) {
+        Carro carro = carroRepository.findById(id).orElse(null);
+        return modelMapper.map(carro, CarroDTO.class);
     }
 
-    public Carro buscarCarroPorId(Long id) {
-        return carroRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Carro não encontrado"));
+    public List<CarroDTO> listarTodos() {
+        List<Carro> carros = carroRepository.findAll();
+        return carros.stream()
+                .map(carro -> modelMapper.map(carro, CarroDTO.class))
+                .collect(Collectors.toList());
     }
 
-    public Carro cadastrarCarro(CarroDTO carroDTO) {
-        Carro carro = new Carro();
-        carro.setModelo(carroDTO.getModelo());
-        carro.setFabricante(carroDTO.getFabricante());
-        return carroRepository.save(carro);
+    public Page<CarroDTO> listarTodosPaginado(int page, int size) {
+        Page<Carro> carroPage = carroRepository.findAll(PageRequest.of(page, size));
+        return carroPage.map(carro -> modelMapper.map(carro, CarroDTO.class));
     }
 
-    public Carro atualizarCarro(Long id, CarroDTO carroDTO) {
-        Carro carro = buscarCarroPorId(id);
-        carro.setModelo(carroDTO.getModelo());
-        carro.setFabricante(carroDTO.getFabricante());
-        return carroRepository.save(carro);
+    public List<String> listarTodosFabricantes() {
+        return carroRepository.findAllFabricantes();
     }
+
+    public List<String> listarTop10Fabricantes() {
+        return carroRepository.findTop10Fabricantes();
+    }
+
+
+    public Page<CarroDTO> listarTodosPaginadoTermo(String termo, int page) {
+        Page<Carro> carroPage = carroRepository.findPagedByTerm(termo, PageRequest.of(page, 10));
+        return carroPage.map(carro -> modelMapper.map(carro, CarroDTO.class));
+    }
+
+    public CarroDTO salvarCarro(CarroDTO carroDTO) {
+        Carro carro = modelMapper.map(carroDTO, Carro.class);
+        return modelMapper.map(carroRepository.save(carro), CarroDTO.class);
+    }
+
+    public CarroDTO atualizarCarro(CarroDTO carroDTO) throws BadRequestException {
+        if (carroDTO.getCarroId() != null) {
+            Carro carro = carroRepository.findById(carroDTO.getCarroId()).orElse(null);
+            if (carro != null) {
+                modelMapper.map(carroDTO, carro);
+                return modelMapper.map(carroRepository.save(carro), CarroDTO.class);
+            } else {
+                throw new BadRequestException("Carro não encontrado");
+            }
+        } else {
+            throw new BadRequestException("O campo carroID deve ser informado no corpo da requisição");
+        }
+    }
+
 
     public void excluirCarro(Long id) {
-        List<Peca> pecasAssociadas = PecaRepository.findByModeloCarro(carro.getModelo());
-        if (!pecasAssociadas.isEmpty()) {
-            throw new RuntimeException("Esse carro não pode ser excluído pois tem peças associadas a ele");
+        Carro carro = carroRepository.findById(id).orElse(null);
+        if (carro != null && pecaRepository.findByCarro(carro).isEmpty()) {
+            carroRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Não é possível excluir o carro pois há peças associadas a ele.");
         }
-        carroRepository.delete(carro);
     }
 }

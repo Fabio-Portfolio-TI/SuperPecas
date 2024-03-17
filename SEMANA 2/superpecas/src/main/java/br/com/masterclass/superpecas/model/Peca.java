@@ -1,21 +1,15 @@
-package br.com.masterclass.superpecas.entity;
+package br.com.masterclass.superpecas.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "Peca")
+@Table(name = "pecas")
 public class Peca {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PecaId")
+    @Column(name = "PecaID")
     private Long pecaId;
 
     @Column(name = "Nome")
@@ -33,7 +27,8 @@ public class Peca {
     @Column(name = "ModeloCarro")
     private String modeloCarro;
 
-    @Column(name = "CarroId")
-    private Long carroId;
+    @JoinColumn(name = "CarroID", nullable = false)
+    @OneToOne(optional = false)
+    private Carro carro;
 
 }
