@@ -9,6 +9,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +28,7 @@ public class CarroService {
 
     @Autowired
     private ModelMapper modelMapper;
+
 
     public CarroDTO getCarroById(Long id) {
         Carro carro = carroRepository.findById(id).orElse(null);
@@ -76,13 +80,14 @@ public class CarroService {
         }
     }
 
-
     public void excluirCarro(Long id) {
         Carro carro = carroRepository.findById(id).orElse(null);
         if (carro != null && pecaRepository.findByCarro(carro).isEmpty()) {
             carroRepository.deleteById(id);
+            ResponseEntity.status(HttpStatus.OK).body("Carro excluido com sucesso!!!");
         } else {
             throw new RuntimeException("Não é possível excluir o carro pois há peças associadas a ele.");
         }
     }
+
 }

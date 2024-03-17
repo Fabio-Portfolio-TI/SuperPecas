@@ -1,5 +1,6 @@
 package br.com.masterclass.superpecas.controller;
 
+
 import br.com.masterclass.superpecas.model.PecaDTO;
 import br.com.masterclass.superpecas.service.PecaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,29 +37,29 @@ public class PecaController {
         return ResponseEntity.ok(pecas);
     }
 
-//    @GetMapping("/listarTodosPaginado/{termo}")
-//    public ResponseEntity<Page<PecaDTO>> listarPecasPorTermoPaginado(@PathVariable String termo,
-//                                                                     @RequestParam(defaultValue = "0") int page,
-//                                                                     @RequestParam(defaultValue = "10") int size) {
-//        Page<PecaDTO> pecas = pecaService.listarTodasPaginadoTermo(termo, page, size);
-//        return ResponseEntity.ok(pecas);
-//    }
-
-    @PostMapping
-    public ResponseEntity<PecaDTO> salvarPeca(@RequestBody PecaDTO pecaDTO) {
-        PecaDTO savedPeca = pecaService.salvarPeca(pecaDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedPeca);
+    @GetMapping("/listarTodosPaginado/{termo}")
+    public ResponseEntity<Page<PecaDTO>> listarPecasPorTermoPaginado(@PathVariable String termo,
+                                                                     @RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "10") int size) {
+        Page<PecaDTO> pecas = pecaService.listarTodasPaginadoTermo(termo, page, size);
+        return ResponseEntity.ok(pecas);
     }
 
-//    @PutMapping
-//    public ResponseEntity<PecaDTO> atualizarPeca(@RequestBody PecaDTO pecaDTO) {
-//        PecaDTO updatedPeca = pecaService.atualizarPeca(pecaDTO);
-//        return ResponseEntity.ok(updatedPeca);
-//    }
+    @PostMapping
+    public ResponseEntity<?> salvarPeca(@RequestBody PecaDTO pecaDTO) {
+        pecaService.salvarPeca(pecaDTO);
+        return ResponseEntity.status(HttpStatus.OK).body("Peça cadastrada com sucesso!");
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updatePeca(@RequestBody PecaDTO pecaDTO) {
+        pecaService.salvarPeca(pecaDTO);
+        return ResponseEntity.status(HttpStatus.OK).body("Peça atualizada com sucesso!");
+    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirPeca(@PathVariable Long id) {
+    public ResponseEntity<String> excluirPeca(@PathVariable Long id) {
         pecaService.excluirPeca(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).body("Excluido com sucesso!");
     }
 }

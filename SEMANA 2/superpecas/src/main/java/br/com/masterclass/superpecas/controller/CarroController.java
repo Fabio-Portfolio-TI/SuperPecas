@@ -1,5 +1,6 @@
 package br.com.masterclass.superpecas.controller;
 
+import br.com.masterclass.superpecas.model.Carro;
 import br.com.masterclass.superpecas.model.CarroDTO;
 import br.com.masterclass.superpecas.service.CarroService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,6 @@ public class CarroController {
         return ResponseEntity.ok(fabricantes);
     }
 
-
     @PostMapping
     public ResponseEntity<CarroDTO> salvarCarro(@RequestBody CarroDTO carroDTO) {
         CarroDTO savedCarro = carroService.salvarCarro(carroDTO);
@@ -72,4 +72,5 @@ public class CarroController {
         carroService.excluirCarro(id);
         return ResponseEntity.noContent().build();
     }
+
 }

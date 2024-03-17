@@ -12,19 +12,19 @@ public class Peca {
     @Column(name = "PecaID")
     private Long pecaId;
 
-    @Column(name = "Nome")
+    @Column(name = "Nome", nullable = false)
     private String nome;
 
-    @Column(name = "Descricao")
+    @Column(name = "Descricao", nullable = false)
     private String descricao;
 
-    @Column(name = "NumeroSerie")
+    @Column(name = "NumeroSerie", nullable = false, unique = true)
     private String numeroSerie;
 
-    @Column(name = "Fabricante")
+    @Column(name = "Fabricante", nullable = false)
     private String fabricante;
 
-    @Column(name = "ModeloCarro")
+    @Column(name = "ModeloCarro", nullable = false)
     private String modeloCarro;
 
     @JoinColumn(name = "CarroID", nullable = false)

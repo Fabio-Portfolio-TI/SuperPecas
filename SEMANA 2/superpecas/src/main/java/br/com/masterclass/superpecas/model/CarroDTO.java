@@ -8,5 +8,4 @@ public class CarroDTO {
     private String NomeModelo;
     private String Fabricante;
     private String CodigoUnico;
-
 }

@@ -9,4 +9,5 @@ public class PecaDTO {
     private String numeroSerie;
     private String fabricante;
     private String modeloCarro;
+    private Long carroID;
 }
