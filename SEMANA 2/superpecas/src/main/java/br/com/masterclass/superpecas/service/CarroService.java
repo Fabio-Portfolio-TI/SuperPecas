@@ -1,7 +1,8 @@
 package br.com.masterclass.superpecas.service;
 
 import br.com.masterclass.superpecas.model.Carro;
-import br.com.masterclass.superpecas.model.CarroDTO;
+import br.com.masterclass.superpecas.model.dto.CarroDTO;
+import br.com.masterclass.superpecas.model.dto.TopTenCarDTO;
 import br.com.masterclass.superpecas.repository.CarroRepository;
 import br.com.masterclass.superpecas.repository.PecaRepository;
 import org.apache.coyote.BadRequestException;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,6 +61,26 @@ public class CarroService {
     public Page<CarroDTO> listarTodosPaginadoTermo(String termo, int page) {
         Page<Carro> carroPage = carroRepository.findPagedByTerm(termo, PageRequest.of(page, 10));
         return carroPage.map(carro -> modelMapper.map(carro, CarroDTO.class));
+    }
+
+    public List<TopTenCarDTO> findTop10Car() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Object[]> top10CarroIDs = carroRepository.findTop10Car(pageable);
+
+        List<TopTenCarDTO> topTenDTOS = new ArrayList<>();
+        for (Object[] obj : top10CarroIDs) {
+            Long carroID = (Long) obj[0];
+            Long count = (Long) obj[1];
+
+            Carro carro = carroRepository.findById(carroID).orElse(null);
+            if (carro != null) {
+                TopTenCarDTO topTenCarDTO = modelMapper.map(carro, TopTenCarDTO.class);
+                topTenCarDTO.setNumPecasAssociadas(count);
+                topTenDTOS.add(topTenCarDTO);
+            }
+        }
+
+        return topTenDTOS;
     }
 
     public CarroDTO salvarCarro(CarroDTO carroDTO) {

@@ -1,7 +1,7 @@
 package br.com.masterclass.superpecas.controller;
 
-import br.com.masterclass.superpecas.model.Carro;
-import br.com.masterclass.superpecas.model.CarroDTO;
+import br.com.masterclass.superpecas.model.dto.CarroDTO;
+import br.com.masterclass.superpecas.model.dto.TopTenCarDTO;
 import br.com.masterclass.superpecas.service.CarroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,6 +54,11 @@ public class CarroController {
     public ResponseEntity<List<String>> listarTop10Fabricantes() {
         List<String> fabricantes = carroService.listarTop10Fabricantes();
         return ResponseEntity.ok(fabricantes);
+    }
+
+    @GetMapping("/listarTop10CarroComMaisPecas")
+    public List<TopTenCarDTO> getTop10Car() {
+        return carroService.findTop10Car();
     }
 
     @PostMapping

@@ -1,7 +1,7 @@
 package br.com.masterclass.superpecas.controller;
 
 
-import br.com.masterclass.superpecas.model.PecaDTO;
+import br.com.masterclass.superpecas.model.dto.PecaDTO;
 import br.com.masterclass.superpecas.service.PecaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

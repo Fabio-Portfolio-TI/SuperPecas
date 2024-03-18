@@ -19,5 +19,8 @@ public interface CarroRepository extends JpaRepository<Carro, Long> {
     @Query("SELECT c FROM Carro c WHERE LOWER(c.nomeModelo) LIKE LOWER(concat('%', :termo, '%')) OR LOWER(c.fabricante) LIKE LOWER(concat('%', :termo, '%'))")
     Page<Carro> findPagedByTerm(@Param("termo") String termo, Pageable pageable);
 
+    @Query("SELECT p.carro.carroId, COUNT(p) FROM Peca p GROUP BY p.carro.carroId ORDER BY COUNT(p) DESC")
+    List<Object[]> findTop10Car(Pageable pageable);
+
 }
 

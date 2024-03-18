@@ -2,7 +2,7 @@ package br.com.masterclass.superpecas.service;
 
 import br.com.masterclass.superpecas.model.Carro;
 import br.com.masterclass.superpecas.model.Peca;
-import br.com.masterclass.superpecas.model.PecaDTO;
+import br.com.masterclass.superpecas.model.dto.PecaDTO;
 import br.com.masterclass.superpecas.repository.CarroRepository;
 import br.com.masterclass.superpecas.repository.PecaRepository;
 import org.modelmapper.ModelMapper;

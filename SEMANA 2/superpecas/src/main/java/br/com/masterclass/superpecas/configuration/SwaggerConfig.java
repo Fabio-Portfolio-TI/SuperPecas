@@ -1,4 +1,4 @@
-package br.com.masterclass.superpecas.config.swagger;
+package br.com.masterclass.superpecas.configuration;
 
 import java.util.Collections;
 

@@ -1,4 +1,4 @@
-package br.com.masterclass.superpecas.config;
+package br.com.masterclass.superpecas.configuration;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

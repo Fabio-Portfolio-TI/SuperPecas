@@ -1,4 +1,4 @@
-package br.com.masterclass.superpecas.model;
+package br.com.masterclass.superpecas.model.dto;
 
 import lombok.Data;
 
