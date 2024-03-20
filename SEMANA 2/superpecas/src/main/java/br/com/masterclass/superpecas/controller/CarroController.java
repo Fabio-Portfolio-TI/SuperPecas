@@ -1,12 +1,13 @@
 package br.com.masterclass.superpecas.controller;
 
 import br.com.masterclass.superpecas.model.dto.CarroDTO;
-import br.com.masterclass.superpecas.model.dto.TopTenCarDTO;
+import br.com.masterclass.superpecas.projections.CarroProjection;
 import br.com.masterclass.superpecas.service.CarroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,25 +25,26 @@ public class CarroController {
     @Autowired
     private CarroService carroService;
 
+
     @GetMapping("/{id}")
     @Operation(summary = "Busque o Carro pelo seu ID",
             description ="Busque o Carro pelo seu ID",
             tags = {"Carro"},
 
             responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "200",content = @Content(
+                    @ApiResponse( responseCode = "200",content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = CarroDTO.class),
+                            schema = @Schema(implementation = Object.class),
                             examples = @ExampleObject())),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "400",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "401",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "404",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "500",content = @Content),
+                    @ApiResponse( responseCode = "400",content = @Content),
+                    @ApiResponse( responseCode = "401",content = @Content),
+                    @ApiResponse( responseCode = "404",content = @Content),
+                    @ApiResponse( responseCode = "500",content = @Content),
             })
-    public ResponseEntity<CarroDTO> getCarroById(@PathVariable Long id) {
-        CarroDTO carro = carroService.getCarroById(id);
-        return ResponseEntity.ok(carro);
-    }
+    public ResponseEntity<CarroProjection> getCarroById(@PathVariable Long id) {
+    CarroProjection carroProjection = carroService.getCarroProjectionById(id);
+    return ResponseEntity.ok(carroProjection);
+}
 
     @GetMapping("/listarTodos")
     @Operation(summary = "Listar todos os Carros",
@@ -50,17 +52,17 @@ public class CarroController {
             tags = {"Carro"},
 
             responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "200",content = @Content(
+                    @ApiResponse( responseCode = "200",content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = CarroDTO.class),
                             examples = @ExampleObject())),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "400",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "401",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "404",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "500",content = @Content),
+                    @ApiResponse( responseCode = "400",content = @Content),
+                    @ApiResponse( responseCode = "401",content = @Content),
+                    @ApiResponse( responseCode = "404",content = @Content),
+                    @ApiResponse( responseCode = "500",content = @Content),
             })
-    public ResponseEntity<List<CarroDTO>> listarTodosCarros() {
-        List<CarroDTO> carros = carroService.listarTodos();
+    public ResponseEntity<List<CarroProjection>> listarTodosCarros() {
+        List<CarroProjection> carros = carroService.listarTodos();
         return ResponseEntity.ok(carros);
     }
 
@@ -70,56 +72,54 @@ public class CarroController {
             tags = {"Carro"},
 
             responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "200",content = @Content(
+                    @ApiResponse( responseCode = "200",content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = CarroDTO.class),
                             examples = @ExampleObject())),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "400",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "401",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "404",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "500",content = @Content),
+                    @ApiResponse( responseCode = "400",content = @Content),
+                    @ApiResponse( responseCode = "401",content = @Content),
+                    @ApiResponse( responseCode = "404",content = @Content),
+                    @ApiResponse( responseCode = "500",content = @Content),
             })
-    public ResponseEntity<Page<CarroDTO>> listarTodosCarrosPaginado(@RequestParam(defaultValue = "0") int page,
-                                                                    @RequestParam(defaultValue = "10") int size) {
-        Page<CarroDTO> carros = carroService.listarTodosPaginado(page, size);
+    public ResponseEntity<Page<CarroProjection>> listarTodosCarrosPaginado(@RequestParam(defaultValue = "0") int page,
+                                                                           @RequestParam(defaultValue = "10") int size) {
+        Page<CarroProjection> carros = carroService.listarTodosPaginado(page, size);
         return ResponseEntity.ok(carros);
     }
 
-    @GetMapping("/listaTodosPaginado/{termo}")
-    @Operation(summary = "Listar todos os Carros Paginado com 'Termo'",
-            description ="Listar todos os Carros Paginado com 'Termo'",
+    @GetMapping("/listarTodosPaginados/{termo}")
+    @Operation(summary = "Listar todos os Carros Paginado por Termo",
+            description ="Listar todos os Carros Paginado por Termo",
             tags = {"Carro"},
 
             responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "200",content = @Content(
+                    @ApiResponse( responseCode = "200",content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = CarroDTO.class),
                             examples = @ExampleObject())),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "400",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "401",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "404",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "500",content = @Content),
+                    @ApiResponse( responseCode = "400",content = @Content),
+                    @ApiResponse( responseCode = "401",content = @Content),
+                    @ApiResponse( responseCode = "404",content = @Content),
+                    @ApiResponse( responseCode = "500",content = @Content),
             })
-    public ResponseEntity<Page<CarroDTO>> listarCarrosPorTermoPaginado(@PathVariable String termo,
-                                                                       @RequestParam(defaultValue = "0") int page){
-        Page<CarroDTO> carros = carroService.listarTodosPaginadoTermo(termo, page);
-        return ResponseEntity.ok(carros);
+    public Page<CarroProjection> getAllPaged(@PathVariable String termo,
+                                      @RequestParam(defaultValue = "0", name = "page") int numPage) throws Exception {
+        return carroService.findAllPagedByTerm(termo, numPage);
     }
-
     @GetMapping("/listaTodosFabricantes")
     @Operation(summary = "Listar todos os Fabricantes",
             description ="Listar todos os Fabricantes",
             tags = {"Carro"},
 
             responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "200",content = @Content(
+                    @ApiResponse( responseCode = "200",content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = String.class),
+                            schema = @Schema(implementation = CarroDTO.class),
                             examples = @ExampleObject())),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "400",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "401",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "404",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "500",content = @Content),
+                    @ApiResponse( responseCode = "400",content = @Content),
+                    @ApiResponse( responseCode = "401",content = @Content),
+                    @ApiResponse( responseCode = "404",content = @Content),
+                    @ApiResponse( responseCode = "500",content = @Content),
             })
     public ResponseEntity<List<String>> listarTodosFabricantes() {
         List<String> fabricantes = carroService.listarTodosFabricantes();
@@ -128,41 +128,22 @@ public class CarroController {
 
     @GetMapping("/listaTop10Fabricantes")
     @Operation(summary = "Listar os Top 10 Fabricantes",
-            description ="Listaros Top 10 Fabricantes",
+            description ="Listar os Top 10 Fabricantes",
             tags = {"Carro"},
 
             responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "200",content = @Content(
+                    @ApiResponse( responseCode = "200",content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = String.class),
+                            schema = @Schema(implementation = CarroDTO.class),
                             examples = @ExampleObject())),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "400",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "401",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "404",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "500",content = @Content),
+                    @ApiResponse( responseCode = "400",content = @Content),
+                    @ApiResponse( responseCode = "401",content = @Content),
+                    @ApiResponse( responseCode = "404",content = @Content),
+                    @ApiResponse( responseCode = "500",content = @Content),
             })
     public ResponseEntity<List<String>> listarTop10Fabricantes() {
         List<String> fabricantes = carroService.listarTop10Fabricantes();
         return ResponseEntity.ok(fabricantes);
-    }
-
-    @GetMapping("/listarTop10CarroComMaisPecas")
-    @Operation(summary = "Listar os Top 10 Carros com mais Peças",
-            description ="Listar os Top 10 Carros com mais Peças",
-            tags = {"Carro"},
-
-            responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "200",content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = TopTenCarDTO.class),
-                            examples = @ExampleObject())),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "400",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "401",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "404",content = @Content),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse( responseCode = "500",content = @Content),
-            })
-    public List<TopTenCarDTO> getTop10Car() {
-        return carroService.findTop10Car();
     }
 
     @PostMapping
@@ -220,5 +201,7 @@ public class CarroController {
         carroService.excluirCarro(id);
         return ResponseEntity.noContent().build();
     }
+
+//    @GetMapping("/listarTop10CarroComMaisPecas")
 
 }
